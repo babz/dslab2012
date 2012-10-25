@@ -1,16 +1,12 @@
 package server;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
-import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
-
-import client.ClientConnector;
 
 /**
  * Manage auctions created by clients
@@ -20,50 +16,41 @@ import client.ClientConnector;
 public class AuctionManager {
 
 	private static final Logger log = Logger.getLogger(AuctionManager.class);
-
+	
+	private final ExecutorService threadpool = Executors.newCachedThreadPool(); 
+	
 	public static void main(String[] args) throws IOException {
-
+		//logger
 		BasicConfigurator.configure();
+		
+		AuctionManager server1 = new AuctionManager();
+		server1.startServer();
+	}
 
+	public void startServer() {		
+		
+		
 		ServerSocket serverSocket = null;
 		try {
 			serverSocket = new ServerSocket(13460);
+			while (true) {				
+				threadpool.execute(new ClientListener(serverSocket.accept()));
+				log.info("client socket accepted");
+			}
 		} catch (IOException e) {
-			System.err.println("Could not listen on port");
+			System.err.println("Could not listen on port / accept failed");
 		}
-
-		Socket clientSocket = null;
-		try {
-			clientSocket = serverSocket.accept(); 
-			log.info("client socket accepted");
-		} catch (IOException e) {
-			System.err.println("Accept failed.");
-		}
-
-		PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-		BufferedReader in = new BufferedReader(
-				new InputStreamReader(
-						clientSocket.getInputStream()));
-		log.info("socket, pw and br created");
 		
-		String inputLine, outputLine;
-//		KnockKnockProtocol kkp = new KnockKnockProtocol();
-//
-//		outputLine = kkp.processInput(null);
-//		out.println(outputLine);
-
-		int tmp = 0;
-		while ((inputLine = in.readLine()) != null) {
-//			outputLine = kkp.processInput(inputLine);
-//			out.println(outputLine);
-//			if (outputLine.equals("Bye."))
-//				break;
-			log.info("return answer");
-			out.println("Hello babz" + ++tmp);
+		try {
+			serverSocket.close();
+			log.info("Server socket closed.\n");
+		} catch (IOException e) {
+			log.error("could not close server socket");
 		}
-		out.close();
-		in.close();
-		clientSocket.close();
-		serverSocket.close();
 	}
+	
 }
+
+
+
+
