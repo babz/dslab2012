@@ -5,9 +5,9 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
 
-public class ClientConnector {
+public class Client {
 
-	private static final Logger LOG = Logger.getLogger(ClientConnector.class);
+	private static final Logger LOG = Logger.getLogger(Client.class);
 	private static final int NO_OF_ARGS = 3;
 
 	/**
@@ -19,7 +19,7 @@ public class ClientConnector {
 		//logger
 		BasicConfigurator.configure();
 
-		ClientConnector client = new ClientConnector();
+		Client client = new Client();
 
 		if(args.length != NO_OF_ARGS) {
 			System.out.println("supposed no of args:" + NO_OF_ARGS);

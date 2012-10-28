@@ -15,9 +15,9 @@ import sun.security.krb5.internal.UDPClient;
  * @author Babz
  *
  */
-public class AuctionManager {
+public class AuctionServer {
 
-	private static final Logger LOG = Logger.getLogger(AuctionManager.class);
+	private static final Logger LOG = Logger.getLogger(AuctionServer.class);
 
 	private static final int NO_OF_ARGS = 1;
 
@@ -30,7 +30,7 @@ public class AuctionManager {
 		//logger
 		BasicConfigurator.configure();
 
-		AuctionManager server = new AuctionManager();
+		AuctionServer server = new AuctionServer();
 
 		if(args.length != NO_OF_ARGS) {
 			System.out.println("supposed no of args:" + NO_OF_ARGS);
