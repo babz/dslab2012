@@ -65,6 +65,9 @@ public class ClientTcpSocket {
 				}
 				LOG.info("catch server answer: ");
 				System.out.println(in.readLine());
+				while (in.ready()) {	
+					System.out.println(in.readLine());				
+				}
 			}
 		} catch (IOException e) {
 			LOG.error("couldnt receive server response");

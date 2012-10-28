@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 
 public class ClientListener implements Runnable {
 
-	private static final Logger log = Logger.getLogger(ClientListener.class);
+	private static final Logger LOG = Logger.getLogger(ClientListener.class);
 
 	private PrintWriter out;
 	private BufferedReader in;
@@ -28,19 +28,19 @@ public class ClientListener implements Runnable {
 			in = new BufferedReader(new InputStreamReader(
 					clientSocket.getInputStream()));
 		} catch (IOException e1) {
-			log.error("problems with streams");
+			LOG.error("problems with streams");
 		}
-		log.info("socket, pw and br created");
+		LOG.info("socket, pw and br created");
 
 		ClientRequestParser parser = new ClientRequestParser();		
 		String inputLine;
 		try {
 			while ((inputLine = in.readLine()) != null) {
-				log.info("get client request");
+				LOG.info("get client request");
 				out.println(parser.getResponse(inputLine));
 			}
 		} catch (IOException e) {
-			log.error("problems with writing an answer to client");
+			LOG.error("problems with writing an answer to client");
 		}
 		closeClientSocket(clientSocket);
 	}
@@ -51,7 +51,7 @@ public class ClientListener implements Runnable {
 			in.close();
 			client.close();
 		} catch (IOException e) {
-			log.error("problems closing client socket and streams");
+			LOG.error("problems closing client socket and streams");
 		}
 	}
 }
