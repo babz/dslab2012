@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 import org.apache.log4j.Logger;
@@ -33,12 +32,12 @@ public class ClientListener implements Runnable {
 		}
 		log.info("socket, pw and br created");
 
+		ClientRequestParser parser = new ClientRequestParser();		
 		String inputLine;
-		int tmp = 0;
 		try {
 			while ((inputLine = in.readLine()) != null) {
-				log.info("return answer");
-				out.println("Hello babz" + ++tmp);
+				log.info("get client request");
+				out.println(parser.getResponse(inputLine));
 			}
 		} catch (IOException e) {
 			log.error("problems with writing an answer to client");
