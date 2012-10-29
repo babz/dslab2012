@@ -120,7 +120,7 @@ public class ClientRequestParser {
 			return "Successfully logged out as " + loggedOutUser;
 		}
 	}
-	
+
 	private String createBid(int duration, String description) {
 		int id = auctionMgmt.createAuction(currUserName, duration, description);
 		Date expiration = auctionMgmt.getExpiration(id);
@@ -128,15 +128,15 @@ public class ClientRequestParser {
 	}
 
 	private String bid(int auctionId, double amount) {
-		Auction auction = auctionMgmt.getAuction(auctionId); 
-		if(auction == null) {
+		int success = auctionMgmt.bid(auctionId, amount, currUserName);
+		if(success == -1) {
 			return "Auction not available";
 		} else {
+			Auction auction = auctionMgmt.getAuction(auctionId);
 			double currHighestBid = auction.getHighestBid();
-			if(amount <= currHighestBid) {
+			if (success == 0) {
 				return "You unsuccesfully bid with " + amount + " on '" + auction.getDescription() + "'. Current highest bid is " + currHighestBid + ".";
 			} else {
-				auction.setHighestBid(amount, currUserName);
 				return "You successfully bid with " + auction.getHighestBid() + " on '" + auction.getDescription() + "'.";
 			}
 		}

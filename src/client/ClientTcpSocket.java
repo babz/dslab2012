@@ -59,7 +59,8 @@ public class ClientTcpSocket {
 			while ((userInput = stdIn.readLine()) != null) {
 				LOG.info("pass user request to server");
 				if(userInput.startsWith("!login")) {
-					out.println(userInput + " " + udpPort);
+					out.println(userInput + " " + udp);
+					new ClientUdpSocket(udpPort);
 				} else if (userInput.startsWith("!end")) {
 					//TODO check if sufficient
 					closeAll();

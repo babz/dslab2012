@@ -61,5 +61,9 @@ public class UserManagement {
 		}
 		
 	}
+
+	public User getUserByName(String username) {
+		return loggedInUsers.get(username);
+	}
 	
 }

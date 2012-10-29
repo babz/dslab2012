@@ -9,6 +9,11 @@ import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 
+/**
+ * sends udp packet to server without content
+ * @author Babz
+ *
+ */
 public class ClientUdpSocket {
 
 	private static final Logger LOG = Logger.getLogger(ClientUdpSocket.class);
@@ -24,7 +29,7 @@ public class ClientUdpSocket {
 
 		LOG.info("send request");
 		byte[] buf = new byte[256];
-		address = socket.getInetAddress();
+		address = InetAddress.getLocalHost();
 		packet = new DatagramPacket(buf, buf.length, address, udpPort);
 		socket.send(packet);
 

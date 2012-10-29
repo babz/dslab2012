@@ -1,14 +1,7 @@
 package server;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
-
-import sun.security.krb5.internal.UDPClient;
 
 /**
  * Manage auctions created by clients
@@ -18,7 +11,6 @@ import sun.security.krb5.internal.UDPClient;
 public class AuctionServer {
 
 	private static final Logger LOG = Logger.getLogger(AuctionServer.class);
-
 	private static final int NO_OF_ARGS = 1;
 
 	/**
@@ -40,7 +32,7 @@ public class AuctionServer {
 
 		int tcpPort = Integer.parseInt(args[0]);
 		LOG.info("ready to go");
-		
+
 		new ServerTcpSocket(tcpPort);
 	}
 }

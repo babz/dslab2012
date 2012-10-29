@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class Auction {
 
-	private String owner, description, highestBidder;
+	private String owner, description, highestBidder, prevHighestBidder;
 	private int duration;
 	private long startTime;
 	private double highestBid;
@@ -28,6 +28,7 @@ public class Auction {
 		startTime = System.currentTimeMillis();
 		highestBid = 0.00;
 		highestBidder = "none";
+		prevHighestBidder = "none";
 		endTime = new Date(startTime + duration);
 	}
 
@@ -55,15 +56,21 @@ public class Auction {
 		return Double.parseDouble(bidFloatFormat.format(highestBid));
 	}
 
-	public void setHighestBid(double highestBid, String highestBidder) {
-		this.highestBid = highestBid;
-		this.highestBidder = highestBidder;
+	public void setHighestBid(double newHighestBid, String newHighestBidder) {
+		prevHighestBidder = highestBidder;
+		highestBid = newHighestBid;
+		highestBidder = newHighestBidder;
 	}
 
+	public String getPreviousHighestBidder() {
+		return prevHighestBidder;
+	}
+	
 	@Override
 	public String toString() {
 
 		return id + ". '" + description + "' " + owner + " " + endTime + " " + bidFloatFormat.format(highestBid) + " " + highestBidder; 
 	}
+
 
 }

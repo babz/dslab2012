@@ -1,11 +1,14 @@
 package server;
 
+import java.net.SocketException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 
@@ -17,11 +20,15 @@ import org.apache.log4j.Logger;
 public class AuctionManagement {
 
 	private static AuctionManagement instance;
+	private static UserManagement userMgmt = UserManagement.getInstance();
 	private static final Logger LOG = Logger.getLogger(AuctionManagement.class);
+	private final static ExecutorService threadpool = Executors.newCachedThreadPool();
 
 	private Map<Integer, Auction> allActiveAuctions = Collections.synchronizedMap(new ConcurrentHashMap<Integer, Auction>());
 	private static int auctionId = 0;
 	private Timer timer;
+
+	private enum StatusFlag {OVERBID, TERMINATED}
 
 	private AuctionManagement() {
 		timer = new Timer();
@@ -51,7 +58,8 @@ public class AuctionManagement {
 	}
 
 	/**
-	 * checks map for expired auctions and removes them from map
+	 * checks map for expired auctions and removes them from map;
+	 * when an auction terminates, highest bidder and owner get informed
 	 */
 	public synchronized void checkExpiredAuctions() {
 		synchronized (allActiveAuctions) {
@@ -59,10 +67,53 @@ public class AuctionManagement {
 				Date now = new Date(System.currentTimeMillis());
 				Date expiration = entry.getValue().getExpirationDate(); 
 				if(now.compareTo(expiration) > 0) {
-					allActiveAuctions.remove(entry.getKey());
+					int auctionId = entry.getKey();
+					sendNotification(auctionId, StatusFlag.TERMINATED);
+					//					informUsersAboutTermination(auctionId);
+					allActiveAuctions.remove(auctionId);
 				}
 			}
 		}
+	}
+
+	/**
+	 * sends udp notification to clients;
+	 * Terminated: notifications are sent to owner and winner
+	 * Overbid: previously highest bidder is notified
+	 * @param id auction id
+	 * @param flag termination notification or overbid notification is sent
+	 */
+	private void sendNotification(int id, StatusFlag flag) {
+		Auction currAuction = getAuction(id);
+		if(flag == StatusFlag.OVERBID) {
+			String prevHighestBidder = currAuction.getPreviousHighestBidder();
+			String message = "!new-bid " + currAuction.getDescription();
+			sendUdpMsg(getUserUdpPort(prevHighestBidder), message);
+			//		threadpool.execute(new ServerUdpSocket();
+		} else if(flag == StatusFlag.TERMINATED) {
+			String owner = currAuction.getOwner();
+			String winner = currAuction.getHighestBidder();
+			String message = "!auction-ended " + winner + " " + currAuction.getHighestBid() + " " + currAuction.getDescription();
+			sendUdpMsg(getUserUdpPort(owner), message);
+			sendUdpMsg(getUserUdpPort(winner), message);
+		} else {
+			System.out.println("flag is null!");
+		}
+
+	}
+
+	private void sendUdpMsg(int udpPort, String msg) {
+		try {
+			threadpool.execute(new ServerUdpSocket(udpPort, msg));
+		} catch (SocketException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("problem opening udp socket");
+		}
+	}
+
+	private int getUserUdpPort(String username) {
+		return userMgmt.getUserByName(username).getUdpPort();
 	}
 
 	/**
@@ -97,6 +148,25 @@ public class AuctionManagement {
 			return null;
 		}
 		return allActiveAuctions.get(id);
+	}
+
+	public int bid(int id, double amount, String userName) {
+		Auction auction = getAuction(id);
+		if(auction == null) {
+			return -1;
+		} else {
+			double currHighestBid = auction.getHighestBid();
+			if(amount <= currHighestBid) {
+				return 0;
+			} else {
+				auction.setHighestBid(amount, userName);
+				if(!auction.getPreviousHighestBidder().equals("none")) {
+					sendNotification(id, StatusFlag.OVERBID);
+				}
+				return 1;
+			}
+		}
+
 	}
 
 }

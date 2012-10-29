@@ -32,11 +32,6 @@ public class Client {
 		int udpPort = Integer.parseInt(args[2]);
 		
 		new ClientTcpSocket(serverHost, tcpPort, udpPort);
-		try {
-			new ClientUdpSocket(udpPort);
-		} catch (IOException e) {
-			System.out.println("problem connecting via udp");
-		}
 	}
 
 }

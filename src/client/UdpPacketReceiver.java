@@ -12,6 +12,7 @@ public class UdpPacketReceiver implements Runnable {
 	
 	private DatagramSocket socket;
 	private DatagramPacket packet;
+	private MessageParser parser = new MessageParser();
 
 	private byte[] buf;
 	
@@ -33,7 +34,8 @@ public class UdpPacketReceiver implements Runnable {
 
 		LOG.info("display response");
 		String received = new String(packet.getData(), 0, packet.getLength());
-		System.out.println("Server response: " + received);
+		parser.parseMsg(received);
+//		System.out.println("Server response: " + received);
 		
 		closeAll();
 	}
