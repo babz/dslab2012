@@ -51,16 +51,13 @@ public class Auction {
 		return highestBidder;
 	}
 
-	public void setHighestBidder(String highestBidder) {
-		this.highestBidder = highestBidder;
-	}
-
 	public double getHighestBid() {
-		return highestBid;
+		return Double.parseDouble(bidFloatFormat.format(highestBid));
 	}
 
-	public void setHighestBid(double highestBid) {
+	public void setHighestBid(double highestBid, String highestBidder) {
 		this.highestBid = highestBid;
+		this.highestBidder = highestBidder;
 	}
 
 	@Override

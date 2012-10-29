@@ -15,12 +15,12 @@ public class ClientRequestParser {
 	private static final Logger LOG = Logger.getLogger(ClientRequestParser.class);
 	private UserManagement userMgmt = UserManagement.getInstance();
 	private AuctionManagement auctionMgmt = AuctionManagement.getInstance();
-	
+
 	private String currUserName = null;
-	private String response = "";
 
 	public String getResponse(String clientRequest) {
 		String[] request = clientRequest.split("\\s");
+		String response = "";
 
 		//args: [0] = command, [1] = username, [2] = uspport
 		if(clientRequest.startsWith("!login")) {
@@ -34,13 +34,7 @@ public class ClientRequestParser {
 			} else {
 				String userName = request[1];
 				String udpPort = request[2];
-				boolean loginSuccessful = userMgmt.login(userName, udpPort);
-				if(!loginSuccessful) {
-					response = "Already logged in";
-				} else {
-					currUserName = userName;
-					response = "Successfully logged in as " + currUserName;
-				}
+				response = login(userName, udpPort);
 				LOG.info("client request 'login' finished");
 			}
 		} 
@@ -53,13 +47,7 @@ public class ClientRequestParser {
 			} else if(currUserName == null) {
 				response = "You have to log in first";
 			} else {
-				boolean logoutSuccessful = userMgmt.logout(currUserName);
-				if(!logoutSuccessful) {
-					response = "Log in first";
-				} else {
-					response = "Successfully logged out as " + currUserName;
-					currUserName = null;
-				}
+				response = logout();
 			}
 			LOG.info("client request 'logout' finished");
 		}
@@ -70,6 +58,7 @@ public class ClientRequestParser {
 				LOG.info("wrong no of args");
 				response = "expected parameter: none";
 			} else {
+				//TODO sort
 				response = auctionMgmt.getAllActiveAuctions();
 			}
 			LOG.info("client request 'list' finished");
@@ -85,10 +74,7 @@ public class ClientRequestParser {
 			} else {
 				int duration = Integer.parseInt(request[1]);
 				String description = clientRequest.substring(request[0].length()+request[1].length()+2);
-				
-				int id = auctionMgmt.createAuction(currUserName, duration, description);
-				Date expiration = auctionMgmt.getExpiration(id);
-				response = "An auction '" + description + "' with id " + id + "has been created and will end on " + expiration;
+				response = createBid(duration, description);
 			}
 			LOG.info("client request 'create' finished");
 		}
@@ -101,29 +87,61 @@ public class ClientRequestParser {
 			} else if(!isAuthorized()) {
 				response = "You have to log in first to use this request";
 			} else {
-				response = "TODO implement";
+				int auctionId = Integer.parseInt(request[1]);
+				double amount = Double.parseDouble(request[2]);
+				response = bid(auctionId, amount);
 			}
 			LOG.info("client request 'bid' finished");
 		}
-		//args: [0] = cmd
-		else if(clientRequest.startsWith("!end")) {
-			int expectedNoOfArgs = 1;
-			if(request.length != expectedNoOfArgs) {
-				LOG.info("wrong no of args");
-				response = "expected parameter: none";
-			} else if(!isAuthorized()) {
-				response = "You have to log in first to use this request";
-			} else {
-				response = "TODO implement";
-			}
-			LOG.info("client request 'end' finished");
-		}
 		else {
 			response = "request couldn't be identified";
+			LOG.info("unidentified request");
 		}
 		return response;
 	}
+
+	private String login(String userName, String udpPort) {
+		boolean loginSuccessful = userMgmt.login(userName, udpPort);
+		if(!loginSuccessful) {
+			return "Already logged in";
+		} else {
+			currUserName = userName;
+			return "Successfully logged in as " + currUserName;
+		}
+	}
+
+	private String logout() {
+		boolean logoutSuccessful = userMgmt.logout(currUserName);
+		if(!logoutSuccessful) {
+			return "Log in first";
+		} else {
+			String loggedOutUser = currUserName;
+			currUserName = null;
+			return "Successfully logged out as " + loggedOutUser;
+		}
+	}
 	
+	private String createBid(int duration, String description) {
+		int id = auctionMgmt.createAuction(currUserName, duration, description);
+		Date expiration = auctionMgmt.getExpiration(id);
+		return "An auction '" + description + "' with id " + id + "has been created and will end on " + expiration;
+	}
+
+	private String bid(int auctionId, double amount) {
+		Auction auction = auctionMgmt.getAuction(auctionId); 
+		if(auction == null) {
+			return "Auction not available";
+		} else {
+			double currHighestBid = auction.getHighestBid();
+			if(amount <= currHighestBid) {
+				return "You unsuccesfully bid with " + amount + " on '" + auction.getDescription() + "'. Current highest bid is " + currHighestBid + ".";
+			} else {
+				auction.setHighestBid(amount, currUserName);
+				return "You successfully bid with " + auction.getHighestBid() + " on '" + auction.getDescription() + "'.";
+			}
+		}
+	}
+
 	private boolean isAuthorized() {
 		if(currUserName == null) {
 			return false;

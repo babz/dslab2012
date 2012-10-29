@@ -60,6 +60,10 @@ public class ClientTcpSocket {
 				LOG.info("pass user request to server");
 				if(userInput.startsWith("!login")) {
 					out.println(userInput + " " + udpPort);
+				} else if (userInput.startsWith("!end")) {
+					//TODO check if sufficient
+					closeAll();
+					LOG.info("client request 'end' finished");
 				} else {
 					out.println(userInput);
 				}
@@ -73,7 +77,7 @@ public class ClientTcpSocket {
 			LOG.error("couldnt receive server response");
 		}
 
-		closeAll();
+//		closeAll();
 	}
 
 	private void closeAll() {

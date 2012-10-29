@@ -18,16 +18,16 @@ public class AuctionManagement {
 
 	private static AuctionManagement instance;
 	private static final Logger LOG = Logger.getLogger(AuctionManagement.class);
-	
+
 	private Map<Integer, Auction> allActiveAuctions = Collections.synchronizedMap(new ConcurrentHashMap<Integer, Auction>());
 	private static int auctionId = 0;
 	private Timer timer;
-	
+
 	private AuctionManagement() {
 		timer = new Timer();
 		timer.scheduleAtFixedRate(new AuctionExpirationController(), 0, 5000);
 	}
-	
+
 	public static synchronized AuctionManagement getInstance() {
 		if(instance == null) { 
 			instance = new AuctionManagement();
@@ -38,14 +38,21 @@ public class AuctionManagement {
 
 	public String getAllActiveAuctions() {
 		String activeAuctions = "";
-		synchronized (allActiveAuctions) {
-			for(Entry<Integer, Auction> entry: allActiveAuctions.entrySet()) {
-				activeAuctions += entry.getValue().toString() + "\n";
+		if(allActiveAuctions.isEmpty()) {
+			activeAuctions = "There are currently no active auctions";
+		} else {
+			synchronized (allActiveAuctions) {
+				for(Entry<Integer, Auction> entry: allActiveAuctions.entrySet()) {
+					activeAuctions += entry.getValue().toString() + "\n";
+				}
 			}
 		}
 		return activeAuctions;
 	}
-	
+
+	/**
+	 * checks map for expired auctions and removes them from map
+	 */
 	public synchronized void checkExpiredAuctions() {
 		synchronized (allActiveAuctions) {
 			for(Entry<Integer, Auction> entry: allActiveAuctions.entrySet()) {
@@ -78,6 +85,18 @@ public class AuctionManagement {
 	 */
 	public Date getExpiration(int id) {
 		return allActiveAuctions.get(id).getExpirationDate();
+	}
+
+	/**
+	 * returns active auction
+	 * @param id look for auction by id
+	 * @return auction if active; null otherwise
+	 */
+	public Auction getAuction(int id) {
+		synchronized (allActiveAuctions) {
+			
+		}
+		return null;
 	}
 
 }
