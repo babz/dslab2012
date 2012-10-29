@@ -124,7 +124,7 @@ public class ClientRequestParser {
 	private String createBid(int duration, String description) {
 		int id = auctionMgmt.createAuction(currUserName, duration, description);
 		Date expiration = auctionMgmt.getExpiration(id);
-		return "An auction '" + description + "' with id " + id + "has been created and will end on " + expiration;
+		return "An auction '" + description + "' with id " + id + " has been created and will end on " + expiration;
 	}
 
 	private String bid(int auctionId, double amount) {

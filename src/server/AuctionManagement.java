@@ -93,10 +93,10 @@ public class AuctionManagement {
 	 * @return auction if active; null otherwise
 	 */
 	public Auction getAuction(int id) {
-		synchronized (allActiveAuctions) {
-			
+		if(!allActiveAuctions.containsKey(id)) {
+			return null;
 		}
-		return null;
+		return allActiveAuctions.get(id);
 	}
 
 }
