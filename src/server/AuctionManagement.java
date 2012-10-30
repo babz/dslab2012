@@ -75,7 +75,7 @@ public class AuctionManagement {
 			}
 		}
 	}
-
+	
 	/**
 	 * sends udp notification to clients;
 	 * Terminated: notifications are sent to owner and winner
@@ -103,7 +103,7 @@ public class AuctionManagement {
 
 	}
 
-	private void sendUdpMsg(String user, String msg) {
+	public void sendUdpMsg(String user, String msg) {
 		boolean isOnline = userMgmt.getUserByName(user).isLoggedIn();
 		int udpPort = getUserUdpPort(user);
 		if(!isOnline) {

@@ -109,7 +109,7 @@ public class ClientRequestParser {
 			String pendingNotifications = userMgmt.getUserByName(userName).getPendingNotifications();
 			
 			if(!pendingNotifications.isEmpty()) {
-				return pendingNotifications; 
+				auctionMgmt.sendUdpMsg(userName, pendingNotifications);
 			}
 			return "Successfully logged in as " + currUserName;
 		}
