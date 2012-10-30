@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 
 import org.apache.log4j.Logger;
@@ -16,9 +17,11 @@ public class ClientListener implements Runnable {
 	private BufferedReader in;
 
 	private Socket clientSocket;
+	private InetAddress ip;
 
 	public ClientListener(Socket client) throws IOException {
 		clientSocket = client;
+		ip = client.getInetAddress();
 	}
 
 	@Override
@@ -32,7 +35,7 @@ public class ClientListener implements Runnable {
 		}
 		LOG.info("socket, pw and br created");
 
-		ClientRequestParser parser = new ClientRequestParser();		
+		ClientRequestParser parser = new ClientRequestParser(ip);		
 		String inputLine;
 		try {
 			while ((inputLine = in.readLine()) != null) {

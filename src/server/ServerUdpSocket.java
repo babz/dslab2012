@@ -21,13 +21,14 @@ public class ServerUdpSocket implements Runnable {
 	private boolean alive;
 	private int udpPort;
 	private String msg;
+	private InetAddress ipAddress;
 
-
-	public ServerUdpSocket(int clientUdpPort, String message) throws SocketException {
+	public ServerUdpSocket(int clientUdpPort, InetAddress ipAddress, String message) throws SocketException {
 		socket = new DatagramSocket();
 		udpPort = clientUdpPort;
 		msg = message;
 		alive = true;
+		this.ipAddress = ipAddress;
 	}
 
 	public void run() {
@@ -39,11 +40,11 @@ public class ServerUdpSocket implements Runnable {
 
 			// send the response to the client at "address" and "port"
 			// TODO get ip address from tcp connection
-			InetAddress address = InetAddress.getByName("localhost");
+//			InetAddress address = InetAddress.getByName("localhost");
 			int port = udpPort;
 			LOG.info("message:" + msg);
 			buf = msg.getBytes();
-			packet = new DatagramPacket(buf, buf.length, address, port);
+			packet = new DatagramPacket(buf, buf.length, ipAddress, port);
 			socket.send(packet);
 			alive = false;
 		} catch (IOException e) {

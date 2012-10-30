@@ -1,5 +1,6 @@
 package server;
 
+import java.net.InetAddress;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,18 +34,20 @@ public class UserManagement {
 	 * logs in the user if not already logged in
 	 * @param userName
 	 * @param userUdpPort
+	 * @param clientIp 
 	 * @return true: successfully logged in
 	 */
-	public boolean login(String userName, String userUdpPort) {
+	public boolean login(String userName, String userUdpPort, InetAddress clientIp) {
 		User tmpUser = getUserByName(userName);
 		if(tmpUser != null && tmpUser.isLoggedIn()) {
 			return false;
 		} else {
 			if(tmpUser == null) {
-				tmpUser = new User(userName, userUdpPort);
+				tmpUser = new User(userName, userUdpPort, clientIp);
 				allUsers.put(userName, tmpUser);
 			} else {
 				tmpUser.setUdpPort(userUdpPort);
+				tmpUser.setIpAddress(clientIp);
 			}
 			tmpUser.logIn();
 			return true;

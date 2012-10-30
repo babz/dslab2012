@@ -1,5 +1,6 @@
 package server;
 
+import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.Collections;
 import java.util.Date;
@@ -106,17 +107,22 @@ public class AuctionManagement {
 	public void sendUdpMsg(String user, String msg) {
 		boolean isOnline = userMgmt.getUserByName(user).isLoggedIn();
 		int udpPort = getUserUdpPort(user);
+		InetAddress ipAddress = getUserIpAdress(user);
 		if(!isOnline) {
 			userMgmt.getUserByName(user).storeNotification(msg);
 		} else {
 			try {
-				threadpool.execute(new ServerUdpSocket(udpPort, msg));
+				threadpool.execute(new ServerUdpSocket(udpPort, ipAddress, msg));
 			} catch (SocketException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				System.out.println("problem opening udp socket");
 			}
 		}
+	}
+
+	private InetAddress getUserIpAdress(String user) {
+		return userMgmt.getUserByName(user).getIpAddress();
 	}
 
 	private int getUserUdpPort(String username) {

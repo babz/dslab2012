@@ -1,5 +1,6 @@
 package server;
 
+import java.net.InetAddress;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
@@ -17,6 +18,11 @@ public class ClientRequestParser {
 	private AuctionManagement auctionMgmt = AuctionManagement.getInstance();
 
 	private String currUserName = null;
+	private InetAddress clientIp = null;
+
+	public ClientRequestParser(InetAddress clientIp) {
+		this.clientIp = clientIp;
+	}
 
 	public String getResponse(String clientRequest) {
 		String[] request = clientRequest.split("\\s");
@@ -81,13 +87,15 @@ public class ClientRequestParser {
 		//args: [0] = cmd, [1] = auction-id, [2] = amount
 		else if(clientRequest.startsWith("!bid")) {
 			int expectedNoOfArgs = 3;
+			int auctionId = Integer.parseInt(request[1]);
 			if(request.length != expectedNoOfArgs) {
 				LOG.info("wrong no of args");
 				response = "expected parameter: auction-id + amount";
 			} else if(!isAuthorized()) {
 				response = "You have to log in first to use this request";
+			} else if(currUserName.equals(auctionMgmt.getAuction(auctionId).getOwner())) {
+				response = "As the auction owner you are not allowed to bid at this auction";
 			} else {
-				int auctionId = Integer.parseInt(request[1]);
 				double amount = Double.parseDouble(request[2]);
 				response = bid(auctionId, amount);
 			}
@@ -101,7 +109,7 @@ public class ClientRequestParser {
 	}
 
 	private String login(String userName, String udpPort) {
-		boolean loginSuccessful = userMgmt.login(userName, udpPort);
+		boolean loginSuccessful = userMgmt.login(userName, udpPort, clientIp);
 		if(!loginSuccessful) {
 			return "Already logged in";
 		} else {

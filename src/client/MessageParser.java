@@ -12,7 +12,7 @@ public class MessageParser {
 	public void parseMsg(String msg) {
 		//args: [0] = cmd, [1] = description
 		if(msg.startsWith(STR_NEWBID)) {
-			String description = msg.substring(STR_NEWBID.length());
+			String description = msg.substring(STR_NEWBID.length() + 1);
 			System.out.println("You have been overbid on '" + description + "'");
 			LOG.info("server response 'new-bid' finished");
 		} 

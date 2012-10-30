@@ -1,17 +1,21 @@
 package server;
 
+import java.net.InetAddress;
+
 public class User {
 
 	private String name;
 	private int udpPort;
 	private boolean loggedIn;
 	private String pendingNotifications;
+	private InetAddress ipAddress;
 	
-	public User(String userName, String userUdpPort) {
+	public User(String userName, String userUdpPort, InetAddress clientIp) {
 		name = userName;
 		udpPort = Integer.parseInt(userUdpPort);
 		loggedIn = false;
 		pendingNotifications = "";
+		ipAddress = clientIp;
 	}
 
 	public String getName() {
@@ -48,5 +52,13 @@ public class User {
 	
 	public String getPendingNotifications() {
 		return pendingNotifications;
+	}
+
+	public void setIpAddress(InetAddress clientIp) {
+		ipAddress = clientIp;
+	}
+	
+	public InetAddress getIpAddress() {
+		return ipAddress;
 	}
 }
