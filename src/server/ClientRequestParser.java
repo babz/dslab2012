@@ -93,7 +93,7 @@ public class ClientRequestParser {
 				response = "expected parameter: auction-id + amount";
 			} else if(!isAuthorized()) {
 				response = "You have to log in first to use this request";
-			} else if(currUserName.equals(auctionMgmt.getAuction(auctionId).getOwner())) {
+			} else if(auctionMgmt.getAuction(auctionId) != null && currUserName.equals(auctionMgmt.getAuction(auctionId).getOwner())) {
 				response = "As the auction owner you are not allowed to bid at this auction";
 			} else {
 				double amount = Double.parseDouble(request[2]);
