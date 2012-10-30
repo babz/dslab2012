@@ -21,7 +21,8 @@ public class MessageParser {
 			String[] args = msg.split("\\s");
 			String winner = args[1];
 			String amount = args[2];
-			String description = msg.substring(STR_ENDED.length() + winner.length() + amount.length());
+			// + 3 because of the whitespaces
+			String description = msg.substring(STR_ENDED.length() + winner.length() + amount.length() + 3);
 			//TODO fallunterscheidung ich - du
 			System.out.println("The auction '" + description + "' has ended. " + winner + " won with " + amount);
 			LOG.info("server response 'auction-ended' finished");
