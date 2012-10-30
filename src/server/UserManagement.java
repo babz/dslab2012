@@ -41,8 +41,8 @@ public class UserManagement {
 			return false;
 		} else {
 			if(tmpUser == null) {
-				User userNew = new User(userName, userUdpPort);
-				allUsers.put(userName, userNew);
+				tmpUser = new User(userName, userUdpPort);
+				allUsers.put(userName, tmpUser);
 			} else {
 				tmpUser.setUdpPort(userUdpPort);
 			}

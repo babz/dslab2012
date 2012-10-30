@@ -11,6 +11,7 @@ public class User {
 		name = userName;
 		udpPort = Integer.parseInt(userUdpPort);
 		loggedIn = false;
+		pendingNotifications = "";
 	}
 
 	public String getName() {
