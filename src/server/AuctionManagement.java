@@ -5,6 +5,7 @@ import java.net.SocketException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,8 +50,10 @@ public class AuctionManagement {
 		if(allActiveAuctions.isEmpty()) {
 			activeAuctions = "There are currently no active auctions";
 		} else {
-			synchronized (allActiveAuctions) {
-				for(Entry<Integer, Auction> entry: allActiveAuctions.entrySet()) {
+			TreeMap<Integer, Auction> sortedMap = new TreeMap<Integer, Auction>();
+			sortedMap.putAll(allActiveAuctions);
+			synchronized (sortedMap) {
+				for(Entry<Integer, Auction> entry: sortedMap.entrySet()) {
 					activeAuctions += entry.getValue().toString() + "\n";
 				}
 			}
