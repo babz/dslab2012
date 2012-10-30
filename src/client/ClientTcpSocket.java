@@ -56,11 +56,14 @@ public class ClientTcpSocket {
 
 		String userInput;
 		try {
+			
+			UdpPacketReceiver udpSocket = new UdpPacketReceiver(udpPort);
+			new Thread(udpSocket).start();
+			
 			while ((userInput = stdIn.readLine()) != null) {
 				LOG.info("pass user request to server");
 				if(userInput.startsWith("!login")) {
 					out.println(userInput + " " + udp);
-					new ClientUdpSocket(udpPort);
 				} else if (userInput.startsWith("!end")) {
 					//TODO check if sufficient
 					closeAll();

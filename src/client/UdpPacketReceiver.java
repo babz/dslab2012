@@ -3,6 +3,7 @@ package client;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.SocketException;
 
 import org.apache.log4j.Logger;
 
@@ -15,14 +16,22 @@ public class UdpPacketReceiver implements Runnable {
 	private MessageParser parser = new MessageParser();
 
 	private byte[] buf;
+
+	private int port;
 	
-	public UdpPacketReceiver(DatagramSocket dataSocket, byte[] buffer) {
-		socket = dataSocket;
-		buf = buffer;
+	public UdpPacketReceiver(int udpPort) {
+		port = udpPort;
 	}
 
 	@Override
 	public void run() {
+		try {
+			socket = new DatagramSocket(port);
+		} catch (SocketException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		LOG.info("get response");
 		packet = new DatagramPacket(buf, buf.length);
 		//blocking!
