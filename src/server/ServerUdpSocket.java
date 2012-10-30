@@ -31,16 +31,11 @@ public class ServerUdpSocket implements Runnable {
 		while (alive) {
 			try {
 				byte[] buf = new byte[256];
-
-				// receive request
 				DatagramPacket packet = new DatagramPacket(buf, buf.length);
-				socket.receive(packet);
-
-				// String sentence = new String( packet.getData());
-				// System.out.println("RECEIVED: " + sentence);
 
 				// send the response to the client at "address" and "port"
-				InetAddress address = socket.getInetAddress();
+				// TODO get ip address from tcp connection
+				InetAddress address = socket.getLocalAddress();
 				int port = udpPort;
 				buf = msg.getBytes();
 				packet = new DatagramPacket(buf, buf.length, address, port);
@@ -48,7 +43,6 @@ public class ServerUdpSocket implements Runnable {
 			} catch (IOException e) {
 				e.printStackTrace();
 				alive = false;
-
 			}
 		}
 		closeAll();

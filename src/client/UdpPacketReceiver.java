@@ -10,15 +10,15 @@ import org.apache.log4j.Logger;
 public class UdpPacketReceiver implements Runnable {
 
 	private static final Logger LOG = Logger.getLogger(UdpPacketReceiver.class);
-	
+
 	private DatagramSocket socket;
 	private DatagramPacket packet;
 	private MessageParser parser = new MessageParser();
 
-	private byte[] buf;
+	private byte[] buf = new byte[256];
 
 	private int port;
-	
+
 	public UdpPacketReceiver(int udpPort) {
 		port = udpPort;
 	}
@@ -31,25 +31,24 @@ public class UdpPacketReceiver implements Runnable {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 		LOG.info("get response");
 		packet = new DatagramPacket(buf, buf.length);
-		//blocking!
-		try {
-			socket.receive(packet);
-		} catch (IOException e) {
-			LOG.error("problems receiving udp packet from server");
+		while(true) {
+			//blocking!
+			try {
+				socket.receive(packet);
+			} catch (IOException e) {
+				LOG.error("problems receiving udp packet from server");
+			}
+
+			LOG.info("display response");
+			String received = new String(packet.getData(), 0, packet.getLength());
+			parser.parseMsg(received);
 		}
-
-		LOG.info("display response");
-		String received = new String(packet.getData(), 0, packet.getLength());
-		parser.parseMsg(received);
-//		System.out.println("Server response: " + received);
-		
-		closeAll();
 	}
-
-	private void closeAll() {
+	
+	public void closeAll() {
 		socket.close();
 	}
 
