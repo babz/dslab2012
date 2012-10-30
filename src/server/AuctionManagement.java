@@ -69,7 +69,7 @@ public class AuctionManagement {
 				if(now.compareTo(expiration) > 0) {
 					int auctionId = entry.getKey();
 					sendNotification(auctionId, StatusFlag.TERMINATED);
-					//					informUsersAboutTermination(auctionId);
+					// informUsersAboutTermination(auctionId);
 					allActiveAuctions.remove(auctionId);
 				}
 			}
@@ -88,27 +88,34 @@ public class AuctionManagement {
 		if(flag == StatusFlag.OVERBID) {
 			String prevHighestBidder = currAuction.getPreviousHighestBidder();
 			String message = "!new-bid " + currAuction.getDescription();
-			sendUdpMsg(getUserUdpPort(prevHighestBidder), message);
-			//		threadpool.execute(new ServerUdpSocket();
+			sendUdpMsg(prevHighestBidder, message);
 		} else if(flag == StatusFlag.TERMINATED) {
 			String owner = currAuction.getOwner();
 			String winner = currAuction.getHighestBidder();
-			String message = "!auction-ended " + winner + " " + currAuction.getHighestBid() + " " + currAuction.getDescription();
-			sendUdpMsg(getUserUdpPort(owner), message);
-			sendUdpMsg(getUserUdpPort(winner), message);
+			String message = "!auction-ended " + winner + " " + currAuction.getHighestBidString() + " " + currAuction.getDescription();
+			sendUdpMsg(owner, message);
+			if(!currAuction.getHighestBidder().equals("none")) {
+				sendUdpMsg(winner, message);
+			}
 		} else {
 			System.out.println("flag is null!");
 		}
 
 	}
 
-	private void sendUdpMsg(int udpPort, String msg) {
-		try {
-			threadpool.execute(new ServerUdpSocket(udpPort, msg));
-		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("problem opening udp socket");
+	private void sendUdpMsg(String user, String msg) {
+		boolean isOnline = userMgmt.getUserByName(user).isLoggedIn();
+		int udpPort = getUserUdpPort(user);
+		if(!isOnline) {
+			userMgmt.getUserByName(user).storeNotification(msg);
+		} else {
+			try {
+				threadpool.execute(new ServerUdpSocket(udpPort, msg));
+			} catch (SocketException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println("problem opening udp socket");
+			}
 		}
 	}
 

@@ -53,7 +53,11 @@ public class Auction {
 	}
 
 	public double getHighestBid() {
-		return Double.parseDouble(bidFloatFormat.format(highestBid));
+		return highestBid;
+	}
+	
+	public String getHighestBidString() {
+		return bidFloatFormat.format(highestBid);
 	}
 
 	public void setHighestBid(double newHighestBid, String newHighestBidder) {

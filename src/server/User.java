@@ -5,6 +5,7 @@ public class User {
 	private String name;
 	private int udpPort;
 	private boolean loggedIn;
+	private String pendingNotifications;
 	
 	public User(String userName, String userUdpPort) {
 		name = userName;
@@ -24,8 +25,8 @@ public class User {
 		return udpPort;
 	}
 
-	public void setUdpPort(int udpPort) {
-		this.udpPort = udpPort;
+	public void setUdpPort(String udpPort) {
+		this.udpPort = Integer.parseInt(udpPort);
 	}
 
 	public boolean isLoggedIn() {
@@ -40,4 +41,11 @@ public class User {
 		loggedIn = false;
 	}
 
+	public void storeNotification(String msg) {
+		pendingNotifications += msg + "\n";
+	}
+	
+	public String getPendingNotifications() {
+		return pendingNotifications;
+	}
 }

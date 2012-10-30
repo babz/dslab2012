@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 public class ClientTcpSocket {
 
 	private static final Logger LOG = Logger.getLogger(ClientTcpSocket.class);
-
+	
 	private Socket echoSocket = null;
 	private PrintWriter out = null;
 	private BufferedReader in = null;
@@ -25,6 +25,7 @@ public class ClientTcpSocket {
 
 	private int tcp, udp;
 	private String host;
+	private String currLoggedIn = null;
 
 	/**
 	 * creates the socket
@@ -33,7 +34,7 @@ public class ClientTcpSocket {
 	 * @param udpPort 
 	 */
 	public ClientTcpSocket(String serverHost, int tcpPort, int udpPort) {
-
+		
 		host = serverHost;
 		tcp = tcpPort;
 		udp = udpPort;
@@ -66,23 +67,35 @@ public class ClientTcpSocket {
 					out.println(userInput + " " + udp);
 				} else if (userInput.startsWith("!end")) {
 					//TODO check if sufficient
+					currLoggedIn = null;
 					closeAll();
 					LOG.info("client request 'end' finished");
 				} else {
 					out.println(userInput);
 				}
 				LOG.info("catch server answer: ");
+//				checkAnswer(in.readLine());
 				System.out.println(in.readLine());
 				while (in.ready()) {	
-					System.out.println(in.readLine());				
+//					checkAnswer(in.readLine());
+					System.out.println(in.readLine());
 				}
 			}
 		} catch (IOException e) {
 			LOG.error("couldnt receive server response");
 		}
 
-//		closeAll();
 	}
+
+//	private void checkAnswer(String serverAnswer) {
+//		String loginSuccess = "Successfully logged in as ";
+//		if(serverAnswer.startsWith(loginSuccess)) {
+//			currLoggedIn = serverAnswer.substring(loginSuccess.length());
+//		} else if(serverAnswer.startsWith("Successfully logged out")) {
+//			currLoggedIn = null;
+//		}
+//		System.out.println(serverAnswer);
+//	}
 
 	private void closeAll() {
 		out.close();

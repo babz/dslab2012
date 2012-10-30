@@ -106,6 +106,11 @@ public class ClientRequestParser {
 			return "Already logged in";
 		} else {
 			currUserName = userName;
+			String pendingNotifications = userMgmt.getUserByName(userName).getPendingNotifications();
+			
+			if(!pendingNotifications.isEmpty()) {
+				return pendingNotifications; 
+			}
 			return "Successfully logged in as " + currUserName;
 		}
 	}
