@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
 /**
  * Manages logged in users;
  * users have unique names
@@ -15,7 +13,6 @@ import org.apache.log4j.Logger;
  */
 public class UserManagement {
 
-	private static final Logger LOG = Logger.getLogger(UserManagement.class);
 	private static UserManagement instance;
 
 	private UserManagement() {

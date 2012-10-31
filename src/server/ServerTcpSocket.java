@@ -1,12 +1,10 @@
 package server;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * creates server sockets
@@ -15,7 +13,7 @@ import org.apache.log4j.Logger;
  */
 public class ServerTcpSocket {
 
-	private static final Logger LOG = Logger.getLogger(ServerTcpSocket.class);
+	private static final Logger LOG = Logger.getLogger(ServerTcpSocket.class.getName());
 	private final ExecutorService threadpool = Executors.newCachedThreadPool();
 
 	private ServerSocket serverSocket = null;
@@ -48,7 +46,7 @@ public class ServerTcpSocket {
 			threadpool.shutdown();
 			LOG.info("Server socket closed and threads shut down.");
 		} catch (IOException e) {
-			LOG.error("could not close server socket or shutdown threadpool");
+			LOG.warning("could not close server socket or shutdown threadpool");
 		}
 	}
 

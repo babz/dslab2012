@@ -5,8 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * informs the clients about autions
@@ -15,10 +14,9 @@ import org.apache.log4j.Logger;
  */
 public class ServerUdpSocket implements Runnable {
 
-	private static final Logger LOG = Logger.getLogger(ServerUdpSocket.class);
+	private static final Logger LOG = Logger.getLogger(ServerUdpSocket.class.getName());
 
 	private DatagramSocket socket = null;
-	private boolean alive;
 	private int udpPort;
 	private String msg;
 	private InetAddress ipAddress;
@@ -27,31 +25,25 @@ public class ServerUdpSocket implements Runnable {
 		socket = new DatagramSocket();
 		udpPort = clientUdpPort;
 		msg = message;
-		alive = true;
 		this.ipAddress = ipAddress;
 	}
 
 	public void run() {
 
-		//		while (alive) {
 		try {
 			byte[] buf = new byte[256];
 			DatagramPacket packet = new DatagramPacket(buf, buf.length);
 
 			// send the response to the client at "address" and "port"
-			// TODO get ip address from tcp connection
-//			InetAddress address = InetAddress.getByName("localhost");
+			// InetAddress address = InetAddress.getByName("localhost");
 			int port = udpPort;
 			LOG.info("message:" + msg);
 			buf = msg.getBytes();
 			packet = new DatagramPacket(buf, buf.length, ipAddress, port);
 			socket.send(packet);
-			alive = false;
 		} catch (IOException e) {
 			e.printStackTrace();
-			alive = false;
 		}
-		//		}
 		closeAll();
 	}
 

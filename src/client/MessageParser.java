@@ -1,10 +1,10 @@
 package client;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 public class MessageParser {
 
-	private static final Logger LOG = Logger.getLogger(MessageParser.class);
+	private static final Logger LOG = Logger.getLogger(MessageParser.class.getName());
 	
 	private final String STR_NEWBID = "!new-bid"; 
 	private final String STR_ENDED = "!auction-ended";

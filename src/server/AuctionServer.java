@@ -1,7 +1,6 @@
 package server;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Manage auctions created by clients
@@ -10,7 +9,7 @@ import org.apache.log4j.Logger;
  */
 public class AuctionServer {
 
-	private static final Logger LOG = Logger.getLogger(AuctionServer.class);
+	private static final Logger LOG = Logger.getLogger(AuctionServer.class.getName());
 	private static final int NO_OF_ARGS = 1;
 
 	/**
@@ -18,9 +17,6 @@ public class AuctionServer {
 	 * @param args tcp port
 	 */
 	public static void main(String[] args) {
-
-		//logger
-		BasicConfigurator.configure();
 
 		AuctionServer server = new AuctionServer();
 

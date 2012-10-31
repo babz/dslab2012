@@ -2,8 +2,7 @@ package server;
 
 import java.net.InetAddress;
 import java.util.Date;
-
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * explicitely assigned to ONE client, because running in a seperate thread
@@ -13,7 +12,7 @@ import org.apache.log4j.Logger;
  */
 public class ClientRequestParser {
 
-	private static final Logger LOG = Logger.getLogger(ClientRequestParser.class);
+	private static final Logger LOG = Logger.getLogger(ClientRequestParser.class.getName());
 	private UserManagement userMgmt = UserManagement.getInstance();
 	private AuctionManagement auctionMgmt = AuctionManagement.getInstance();
 

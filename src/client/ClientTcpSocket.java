@@ -6,8 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Creates a socket on client side and opens print writer and buffered reader on it;
@@ -16,7 +15,7 @@ import org.apache.log4j.Logger;
  */
 public class ClientTcpSocket {
 
-	private static final Logger LOG = Logger.getLogger(ClientTcpSocket.class);
+	private static final Logger LOG = Logger.getLogger(ClientTcpSocket.class.getName());
 	
 	private Socket echoSocket = null;
 	private PrintWriter out = null;
@@ -64,6 +63,7 @@ public class ClientTcpSocket {
 			while ((userInput = stdIn.readLine()) != null) {
 				LOG.info("pass user request to server");
 				if(userInput.startsWith("!login")) {
+					currLoggedIn = userInput.substring("!login".length() + 1);
 					out.println(userInput + " " + udp);
 				} else if (userInput.startsWith("!end")) {
 					//TODO check if sufficient
@@ -82,7 +82,7 @@ public class ClientTcpSocket {
 				}
 			}
 		} catch (IOException e) {
-			LOG.error("couldnt receive server response");
+			LOG.warning("couldnt receive server response");
 		}
 
 	}
@@ -104,7 +104,7 @@ public class ClientTcpSocket {
 			stdIn.close();
 			echoSocket.close();
 		} catch (IOException e) {
-			LOG.error("couldnt close socket and streams properly");
+			LOG.warning("couldnt close socket and streams properly");
 		}
 	}
 }

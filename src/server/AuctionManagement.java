@@ -5,14 +5,14 @@ import java.net.SocketException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.Timer;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
-import org.apache.log4j.Logger;
 
 /**
  * manages auctions
@@ -23,7 +23,7 @@ public class AuctionManagement {
 
 	private static AuctionManagement instance;
 	private static UserManagement userMgmt = UserManagement.getInstance();
-	private static final Logger LOG = Logger.getLogger(AuctionManagement.class);
+	private static final Logger LOG = Logger.getLogger(AuctionManagement.class.getName());
 	private final static ExecutorService threadpool = Executors.newCachedThreadPool();
 
 	private Map<Integer, Auction> allActiveAuctions = Collections.synchronizedMap(new ConcurrentHashMap<Integer, Auction>());

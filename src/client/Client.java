@@ -1,13 +1,10 @@
 package client;
-import java.io.IOException;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-
+import java.util.logging.Logger;
 
 public class Client {
 
-	private static final Logger LOG = Logger.getLogger(Client.class);
+	private static final Logger LOG = Logger.getLogger(Client.class.getName());
 	private static final int NO_OF_ARGS = 3;
 
 	/**
@@ -15,9 +12,6 @@ public class Client {
 	 * @param args String array contains server host/ip address, tcp port and udp port
 	 */
 	public static void main(String[] args) {
-
-		//logger
-		BasicConfigurator.configure();
 
 		Client client = new Client();
 

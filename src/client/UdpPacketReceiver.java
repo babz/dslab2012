@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 public class UdpPacketReceiver implements Runnable {
 
-	private static final Logger LOG = Logger.getLogger(UdpPacketReceiver.class);
+	private static final Logger LOG = Logger.getLogger(UdpPacketReceiver.class.getName());
 
 	private DatagramSocket socket;
 	private DatagramPacket packet;
@@ -39,7 +38,7 @@ public class UdpPacketReceiver implements Runnable {
 			try {
 				socket.receive(packet);
 			} catch (IOException e) {
-				LOG.error("problems receiving udp packet from server");
+				LOG.warning("problems receiving udp packet from server");
 			}
 
 			LOG.info("display response");
