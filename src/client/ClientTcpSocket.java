@@ -24,7 +24,6 @@ public class ClientTcpSocket {
 
 	private int tcp, udp;
 	private String host;
-	private String currLoggedIn = null;
 
 	/**
 	 * creates the socket
@@ -61,19 +60,17 @@ public class ClientTcpSocket {
 			new Thread(udpSocket).start();
 			
 			while ((userInput = stdIn.readLine()) != null) {
-				LOG.info("pass user request to server");
+//				LOG.info("pass user request to server");
 				if(userInput.startsWith("!login")) {
-					currLoggedIn = userInput.substring("!login".length() + 1);
 					out.println(userInput + " " + udp);
 				} else if (userInput.startsWith("!end")) {
 					//TODO check if sufficient
-					currLoggedIn = null;
 					closeAll();
 					LOG.info("client request 'end' finished");
 				} else {
 					out.println(userInput);
 				}
-				LOG.info("catch server answer: ");
+//				LOG.info("catch server answer: ");
 //				checkAnswer(in.readLine());
 				System.out.println(in.readLine());
 				while (in.ready()) {	

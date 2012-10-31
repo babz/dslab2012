@@ -31,7 +31,7 @@ public class UdpPacketReceiver implements Runnable {
 			e1.printStackTrace();
 		}
 
-		LOG.info("get response");
+//		LOG.info("get response");
 		packet = new DatagramPacket(buf, buf.length);
 		while(true) {
 			//blocking!
@@ -41,7 +41,7 @@ public class UdpPacketReceiver implements Runnable {
 				LOG.warning("problems receiving udp packet from server");
 			}
 
-			LOG.info("display response");
+//			LOG.info("display response");
 			String received = new String(packet.getData(), 0, packet.getLength());
 			parser.parseMsg(received);
 		}
