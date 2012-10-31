@@ -15,7 +15,7 @@ public class UdpPacketReceiver implements Runnable {
 	private MessageParser parser = new MessageParser();
 
 	private byte[] buf = new byte[256];
-
+	private boolean alive = true;
 	private int port;
 
 	public UdpPacketReceiver(int udpPort) {
@@ -33,7 +33,7 @@ public class UdpPacketReceiver implements Runnable {
 
 //		LOG.info("get response");
 		packet = new DatagramPacket(buf, buf.length);
-		while(true) {
+		while(alive) {
 			//blocking!
 			try {
 				socket.receive(packet);
@@ -47,7 +47,8 @@ public class UdpPacketReceiver implements Runnable {
 		}
 	}
 	
-	public void closeAll() {
+	public void terminate() {
+		alive = false;
 		socket.close();
 	}
 

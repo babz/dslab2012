@@ -184,5 +184,10 @@ public class AuctionManagement {
 		}
 
 	}
+	
+	public void terminate() {
+		threadpool.shutdown();
+		timer.cancel();
+	}
 
 }

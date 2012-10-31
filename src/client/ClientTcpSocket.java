@@ -64,8 +64,8 @@ public class ClientTcpSocket {
 				if(userInput.startsWith("!login")) {
 					out.println(userInput + " " + udp);
 				} else if (userInput.startsWith("!end")) {
-					//TODO check if sufficient
-					closeAll();
+					out.println(userInput);
+					terminate();
 					LOG.info("client request 'end' finished");
 				} else {
 					out.println(userInput);
@@ -80,6 +80,7 @@ public class ClientTcpSocket {
 			}
 		} catch (IOException e) {
 			LOG.warning("couldnt receive server response");
+			terminate();
 		}
 
 	}
@@ -94,7 +95,7 @@ public class ClientTcpSocket {
 //		System.out.println(serverAnswer);
 //	}
 
-	private void closeAll() {
+	private void terminate() {
 		out.close();
 		try {
 			in.close();

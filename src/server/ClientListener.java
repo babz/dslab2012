@@ -43,11 +43,12 @@ public class ClientListener implements Runnable {
 			}
 		} catch (IOException e) {
 			LOG.warning("problems with writing an answer to client");
+			terminate(clientSocket);
 		}
-		closeClientSocket(clientSocket);
+		terminate(clientSocket);
 	}
 
-	private void closeClientSocket(Socket client){
+	private void terminate(Socket client){
 		out.close();
 		try {
 			in.close();

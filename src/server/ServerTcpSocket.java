@@ -18,6 +18,7 @@ public class ServerTcpSocket {
 
 	private ServerSocket serverSocket = null;
 	private int port;
+	private boolean alive = true;
 
 	/**
 	 * opens a thread for each incoming client connection request using a threadpool;
@@ -29,12 +30,13 @@ public class ServerTcpSocket {
 
 		try {
 			serverSocket = new ServerSocket(port);
-			while (true) {				
+			while (alive) {				
 				threadpool.execute(new ClientListener(serverSocket.accept()));
 				LOG.info("client socket accepted");
 			}
 		} catch (IOException e) {
 			System.err.println("Could not listen on port / accept failed");
+			alive = false;
 		}
 
 		closeAll();

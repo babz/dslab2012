@@ -100,6 +100,12 @@ public class ClientRequestParser {
 			}
 			LOG.info("client request 'bid' finished");
 		}
+		else if(clientRequest.startsWith("!end")) {
+			if(currUserName != null) {
+				userMgmt.logout(currUserName);
+				currUserName = null;
+			}
+		}
 		else {
 			response = "request couldn't be identified";
 			LOG.info("unidentified request");
